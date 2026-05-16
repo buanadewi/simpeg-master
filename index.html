@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIMPEG — Sistem Manajemen Kepegawaian</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --navy: #0a192f;
+  --deep-navy: #060e1a;
+  --accent: #172a45;
+  --blue: #3498db;
+  --blue-light: rgba(52,152,219,0.12);
+  --white: #ffffff;
+  --red: #ef4444;
+  --red-light: rgba(239,68,68,0.12);
+  --green: #10b981;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --bg: #f8fafc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:#333;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+.topbar{background:var(--navy);color:#fff;height:65px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;z-index:100;border-bottom:2px solid var(--accent)}
+.topbar-brand{display:flex;align-items:center;gap:14px;font-size:19px;font-weight:800}
+.topbar-brand img{height:40px}
+
+.layout{display:flex;flex:1;overflow:hidden}
+.sidebar{width:260px;background:var(--deep-navy);color:#cbd5e1;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-user{padding:24px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:14px}
+.sidebar-avatar{width:45px;height:45px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:14px 24px;cursor:pointer;font-size:14px;color:#94a3b8}
+.sidebar-item.active{background:rgba(52,152,219,0.1);color:var(--blue);border-right:4px solid var(--blue)}
+
+.content{flex:1;overflow-y:auto;background:var(--bg)}
+.content-inner{padding:32px;max-width:1200px;margin:0 auto}
+
+.card{background:#fff;border-radius:16px;border:1px solid var(--border);margin-bottom:24px;overflow:hidden}
+.card-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;font-size:14px;border-radius:8px;cursor:pointer;font-weight:600;border:none;transition:0.2s}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-red{background:var(--red);color:#fff}
+.btn-ghost{background:transparent; color:var(--text-muted); padding:8px}
+.btn-ghost:hover{background:var(--blue-light); color:var(--blue)}
+.btn-ghost-red:hover{background:var(--red-light); color:var(--red)}
+
+.peg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+.peg-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;cursor:pointer;transition:0.3s;position:relative}
+.peg-card:hover{transform:translateY(-6px);border-color:var(--blue)}
+
+.modern-table{width:100%;border-collapse:collapse;text-align:left}
+.modern-table th{padding:16px;background:#f1f5f9;color:var(--text-muted);font-size:12px;text-transform:uppercase;font-weight:700}
+.modern-table td{padding:16px;border-bottom:1px solid var(--border);font-size:14px}
+.badge-count{background:var(--blue-light);color:var(--blue);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:bold}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(10,25,47,0.8);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:20px;width:95%;max-width:550px;overflow:hidden}
+.form-group{margin-bottom:18px; padding:0 24px}
+.form-label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.form-control{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:10px}
+
+#toast-container{position:fixed;bottom:30px;right:30px;z-index:9999}
+.toast{background:var(--navy);color:#fff;padding:16px 24px;border-radius:12px;margin-top:12px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 15px rgba(0,0,0,0.1)}
+
+#loader{position:fixed;inset:0;background:rgba(255,255,255,0.8);z-index:10000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+.spinner{width:40px;height:40px;border:4px solid var(--border);border-top:4px solid var(--blue);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="spinner"></div><b id="loader-text">Sinkronisasi Cloud...</b></div>
+<div id="toast-container"></div>
+
+<!-- LOGIN SCREEN -->
+<div id="screen-login" style="position:fixed;inset:0;background:var(--deep-navy);z-index:9999;display:flex;align-items:center;justify-content:center">
+  <div style="background:white;padding:48px;border-radius:24px;width:100%;max-width:400px">
+    <h2 style="text-align:center;margin-bottom:30px;color:var(--navy)">SIMPEG Login</h2>
+    <form onsubmit="doLogin(event)">
+      <input type="text" id="l-user" class="form-control" placeholder="Username" style="margin-bottom:15px">
+      <input type="password" id="l-pass" class="form-control" placeholder="Password" style="margin-bottom:25px">
+      <button type="submit" class="btn btn-navy" style="width:100%;justify-content:center">MASUK</button>
+    </form>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none;flex-direction:column;height:100vh">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Logo_Kementrian_Imigrasi_dan_Pemasyarakatan_%282024%29.png/3840px-Logo_Kementrian_Imigrasi_dan_Pemasyarakatan_%282024%29.png">
+      <span>SIMPEG — KEMENIMIPAS</span>
+    </div>
+    <button class="btn btn-red" onclick="doLogout()"><i class="ti ti-logout"></i></button>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">AD</div>
+        <div><div style="font-weight:800;color:white">Administrator</div><div style="font-size:11px">Online</div></div>
+      </div>
+      <div class="sidebar-item active" id="nav-dashboard" onclick="navTo('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+      <div class="sidebar-item" id="nav-pegawai" onclick="navTo('pegawai')"><i class="ti ti-users"></i> Data Pegawai</div>
+    </div>
+
+    <div class="content">
+      <div class="content-inner">
+        
+        <!-- VIEW DASHBOARD -->
+        <div id="view-dashboard" class="view">
+           <h2 style="margin-bottom:24px">Dashboard Overview</h2>
+           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;margin-bottom:32px">
+             <div class="card" style="padding:24px;border-left:5px solid var(--blue)">
+               <div style="color:var(--text-muted);font-size:12px;font-weight:700">TOTAL PEGAWAI</div>
+               <div id="stat-peg" style="font-size:32px;font-weight:900">0</div>
+             </div>
+             <div class="card" style="padding:24px;border-left:5px solid var(--green)">
+               <div style="color:var(--text-muted);font-size:12px;font-weight:700">TOTAL DOKUMEN</div>
+               <div id="stat-doc" style="font-size:32px;font-weight:900">0</div>
+             </div>
+           </div>
+           <div class="card">
+             <div class="card-header">
+               <h3 style="font-size:16px">List Pegawai Terbaru <span id="badge-total" class="badge-count">0</span></h3>
+               <div style="position:relative">
+                 <i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+                 <input type="text" placeholder="Cari di Dashboard..." onkeyup="searchDash(this.value)" style="padding:8px 12px 8px 35px; border:1px solid var(--border); border-radius:8px; font-size:13px; outline:none">
+               </div>
+             </div>
+             <div style="width:100%;overflow-x:auto">
+               <table class="modern-table">
+                 <thead><tr><th>Nama Pegawai</th><th>NIP</th><th>Jabatan</th><th>Departemen</th><th>File</th></tr></thead>
+                 <tbody id="dash-list-body"></tbody>
+               </table>
+               <div id="dash-empty" style="padding:40px; text-align:center; display:none; color:var(--text-muted)">Data tidak ditemukan</div>
+             </div>
+           </div>
+        </div>
+
+        <!-- VIEW PEGAWAI -->
+        <div id="view-pegawai" class="view" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+            <h2>Manajemen Pegawai</h2>
+            <div style="display:flex; gap:12px; align-items:center">
+                <div style="position:relative">
+                    <i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+                    <input type="text" id="pegawai-search-input" placeholder="Cari Nama Pegawai..." onkeyup="renderPegawai(this.value)" style="padding:10px 12px 10px 35px; border:1px solid var(--border); border-radius:8px; font-size:14px; outline:none; width: 250px">
+                </div>
+                <button class="btn btn-blue" onclick="openModal('modal-add')"><i class="ti ti-plus"></i> Tambah Pegawai</button>
+            </div>
+          </div>
+          <div id="peg-container" class="peg-grid"></div>
+        </div>
+
+        <!-- VIEW DETAIL -->
+        <div id="view-detail" class="view" style="display:none">
+          <button class="btn btn-navy" onclick="navTo('pegawai')" style="margin-bottom:20px"><i class="ti ti-chevron-left"></i> Kembali</button>
+          <div class="card">
+            <div class="card-header">
+              <h3 id="det-nama">Nama Pegawai</h3>
+              <button class="btn btn-blue" onclick="document.getElementById('file-input').click()"><i class="ti ti-upload"></i> Upload Dokumen</button>
+            </div>
+            <div id="file-list" style="padding:10px"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="overlay" id="modal-add"><div class="modal"><div style="padding:20px;background:var(--navy);color:white"><b>Tambah Pegawai Baru</b></div><div style="padding:24px 0"><div class="form-group"><label class="form-label">Nama Lengkap</label><input type="text" id="f-nama" class="form-control"></div><div class="form-group"><label class="form-label">NIP (Harus Unik)</label><input type="text" id="f-nip" class="form-control"></div><div class="form-group"><label class="form-label">Jabatan</label><input type="text" id="f-jabatan" class="form-control"></div><div class="form-group"><label class="form-label">Departemen</label><input type="text" id="f-dept" class="form-control"></div><div style="padding:0 24px"><button class="btn btn-blue" style="width:100%;justify-content:center" onclick="savePegawai()">SIMPAN</button></div></div></div></div>
+<div class="overlay" id="modal-edit"><div class="modal"><div style="padding:20px;background:var(--blue);color:white"><b>Edit Data Pegawai</b></div><div style="padding:24px 0"><input type="hidden" id="e-id"><input type="hidden" id="e-folder"><div class="form-group"><label class="form-label">Nama Lengkap</label><input type="text" id="e-nama" class="form-control"></div><div class="form-group"><label class="form-label">NIP</label><input type="text" id="e-nip" class="form-control"></div><div class="form-group"><label class="form-label">Jabatan</label><input type="text" id="e-jabatan" class="form-control"></div><div class="form-group"><label class="form-label">Departemen</label><input type="text" id="e-dept" class="form-control"></div><div style="padding:0 24px; display:flex; gap:10px"><button class="btn btn-navy" style="flex:1;justify-content:center" onclick="updatePegawai()">UPDATE DATA</button><button class="btn" style="background:#eee" onclick="closeModal('modal-edit')">BATAL</button></div></div></div></div>
+<div class="overlay" id="modal-rename"><div class="modal" style="max-width:400px"><div style="padding:20px;background:var(--accent);color:white"><b>Rename Dokumen</b></div><div style="padding:24px 0"><input type="hidden" id="r-id"><div class="form-group"><label class="form-label">Nama File Baru</label><input type="text" id="r-name" class="form-control"></div><div style="padding:0 24px; display:flex; gap:10px"><button class="btn btn-blue" style="flex:1;justify-content:center" onclick="renameFile()">SIMPAN</button><button class="btn" style="background:#eee" onclick="closeModal('modal-rename')">BATAL</button></div></div></div></div>
+
+<input type="file" id="file-input" style="display:none" onchange="handleUpload(this)">
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxw6J726XmR_-xeNkckfdra_09AdVjXkW8HeLemv1_EbwfiP-9ntnc0BHFzq7nnZNoa/exec"; 
+
+let db = { pegawai: [] };
+let currentPegIdx = -1;
+
+// --- SISTEM PERSISTENSI LOGIN & SEARCH ---
+
+// Jalankan cek session segera
+(function checkSession() {
+  const session = sessionStorage.getItem('simpeg_auth');
+  if (session === 'true') {
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('screen-login').style.display = 'none';
+      document.getElementById('main-app').style.display = 'flex';
+      initData();
+    });
+  }
+})();
+
+function doLogin(e) {
+  e.preventDefault();
+  const u = document.getElementById('l-user').value;
+  const p = document.getElementById('l-pass').value;
+  
+  if(u === 'admin' && p === 'admin123'){
+    sessionStorage.setItem('simpeg_auth', 'true');
+    document.getElementById('screen-login').style.display = 'none';
+    document.getElementById('main-app').style.display = 'flex';
+    initData();
+  } else {
+    toast("Login gagal!", "error");
+  }
+}
+
+function doLogout() {
+  if(!confirm("Yakin ingin keluar?")) return;
+  sessionStorage.removeItem('simpeg_auth');
+  location.reload();
+}
+
+// --- API & DATA HANDLING ---
+
+async function request(action, payload = {}) {
+  showLoading(true);
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action, payload })
+    });
+    const result = await res.json();
+    showLoading(false);
+    return result;
+  } catch (err) {
+    showLoading(false);
+    toast("Gagal Sinkronisasi", "error");
+    return null;
+  }
+}
+
+async function initData() {
+  const res = await request("getAppData");
+  if(res) {
+    db = res;
+    updateStats();
+    renderPegawai();
+    renderDashList();
+    
+    // Jika sedang di view detail, update list filenya juga
+    if(currentPegIdx !== -1) {
+        // Cari index pegawai yang sama di data terbaru
+        const currentId = db.pegawai[currentPegIdx]?.id;
+        const newIdx = db.pegawai.findIndex(p => p.id === currentId);
+        if(newIdx !== -1) {
+            currentPegIdx = newIdx;
+            renderFiles();
+        }
+    }
+  }
+}
+
+function updateStats() {
+  const totalPeg = db.pegawai.length;
+  const totalDoc = db.pegawai.reduce((a, b) => a + (b.files ? b.files.length : 0), 0);
+  document.getElementById('stat-peg').textContent = totalPeg;
+  document.getElementById('stat-doc').textContent = totalDoc;
+  document.getElementById('badge-total').textContent = totalPeg;
+}
+
+function navTo(v) {
+  document.querySelectorAll('.view').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).style.display = 'block';
+  document.getElementById('nav-' + v).classList.add('active');
+  if(v === 'pegawai') {
+      document.getElementById('pegawai-search-input').value = "";
+      renderPegawai();
+  }
+}
+
+function renderDashList(filter = "") {
+  const body = document.getElementById('dash-list-body');
+  const empty = document.getElementById('dash-empty');
+  const filtered = db.pegawai.filter(p => p.nama.toLowerCase().includes(filter.toLowerCase()) || p.nip.includes(filter));
+  if(filtered.length === 0) { body.innerHTML = ""; empty.style.display = "block"; return; }
+  empty.style.display = "none";
+  body.innerHTML = filtered.map(p => `<tr><td><b>${p.nama}</b></td><td>${p.nip}</td><td>${p.jabatan}</td><td>${p.dept}</td><td><span class="badge-count">${p.files.length}</span></td></tr>`).join('');
+}
+
+function searchDash(val) { renderDashList(val); }
+
+function renderPegawai(filter = "") {
+  const container = document.getElementById('peg-container');
+  const filtered = db.pegawai.filter(p => p.nama.toLowerCase().includes(filter.toLowerCase()) || p.nip.includes(filter));
+  
+  if(filtered.length === 0) {
+      container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted)">Pegawai tidak ditemukan</div>`;
+      return;
+  }
+
+  container.innerHTML = filtered.map(p => {
+    // Cari index asli di db global
+    const originalIdx = db.pegawai.findIndex(orig => orig.id === p.id);
+    return `
+    <div class="peg-card" onclick="openDetail(${originalIdx})">
+      <div style="display:flex; justify-content:space-between; align-items:start">
+        <div class="sidebar-avatar">${p.nama.charAt(0)}</div>
+        <div style="display:flex; gap:4px">
+          <button class="btn btn-ghost" onclick="event.stopPropagation(); openEditModal(${originalIdx})"><i class="ti ti-pencil"></i></button>
+          <button class="btn btn-ghost btn-ghost-red" onclick="event.stopPropagation(); deletePegawai(${originalIdx})"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+      <div style="margin-top:16px; font-weight:800; color:var(--navy)">${p.nama}</div>
+      <div style="font-size:12px; color:var(--text-muted)">${p.nip} • ${p.jabatan}</div>
+    </div>
+  `}).join('');
+}
+
+async function savePegawai() {
+  const p = {
+    nama: document.getElementById('f-nama').value,
+    nip: document.getElementById('f-nip').value,
+    jabatan: document.getElementById('f-jabatan').value,
+    dept: document.getElementById('f-dept').value
+  };
+  if(!p.nama || !p.nip) return toast("Input wajib diisi", "error");
+
+  const res = await request("addPegawai", p);
+  if(res && res.status === "success") {
+    toast("Pegawai Berhasil Ditambah");
+    closeModal('modal-add');
+    initData();
+    ['f-nama','f-nip','f-jabatan','f-dept'].forEach(id => document.getElementById(id).value="");
+  } else if (res) {
+    toast(res.message, "error");
+  }
+}
+
+function openEditModal(idx) {
+  const p = db.pegawai[idx];
+  document.getElementById('e-id').value = p.id;
+  document.getElementById('e-folder').value = p.folderId;
+  document.getElementById('e-nama').value = p.nama;
+  document.getElementById('e-nip').value = p.nip;
+  document.getElementById('e-jabatan').value = p.jabatan;
+  document.getElementById('e-dept').value = p.dept;
+  openModal('modal-edit');
+}
+
+async function updatePegawai() {
+  const payload = {
+    id: document.getElementById('e-id').value,
+    folderId: document.getElementById('e-folder').value,
+    nama: document.getElementById('e-nama').value,
+    nip: document.getElementById('e-nip').value,
+    jabatan: document.getElementById('e-jabatan').value,
+    dept: document.getElementById('e-dept').value
+  };
+  const res = await request("updatePegawai", payload);
+  if(res && res.status === "success") {
+    toast("Data Pegawai Diperbarui");
+    closeModal('modal-edit');
+    initData();
+  }
+}
+
+function openDetail(idx) {
+  currentPegIdx = idx;
+  document.getElementById('det-nama').textContent = db.pegawai[idx].nama;
+  renderFiles();
+  navTo('detail');
+}
+
+function renderFiles() {
+  const list = document.getElementById('file-list');
+  if(currentPegIdx === -1 || !db.pegawai[currentPegIdx]) return;
+  const files = db.pegawai[currentPegIdx].files || [];
+  
+  if(files.length === 0) {
+      list.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted)">Belum ada dokumen diunggah</div>`;
+      return;
+  }
+
+  list.innerHTML = files.map(f => `
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee">
+      <div style="display:flex; align-items:center; gap:12px">
+        <i class="ti ti-file-text" style="font-size:20px; color:var(--blue)"></i> 
+        <div>
+            <div style="font-size:14px; font-weight:600">${f.name}</div>
+            <div style="font-size:11px; color:var(--text-muted)">ID: ${f.driveId.substring(0,8)}...</div>
+        </div>
+        <i class="ti ti-pencil" onclick="openRenameModal('${f.driveId}', '${f.name}')" style="cursor:pointer; font-size:12px; color:var(--blue)"></i>
+      </div>
+      <div style="display:flex; gap:8px">
+        <a href="${f.url}" target="_blank" class="btn btn-navy" style="padding:6px 12px">LIHAT</a>
+        <button class="btn btn-red" onclick="deleteFile('${f.driveId}')" style="padding:6px 12px">HAPUS</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openRenameModal(id, currentName) {
+  document.getElementById('r-id').value = id;
+  document.getElementById('r-name').value = currentName;
+  openModal('modal-rename');
+}
+
+async function renameFile() {
+  const id = document.getElementById('r-id').value;
+  const newName = document.getElementById('r-name').value;
+  const res = await request("renameFile", { driveId: id, newName: newName });
+  if(res) {
+    toast("Nama File Diubah");
+    initData(); 
+    closeModal('modal-rename');
+  }
+}
+
+function handleUpload(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const p = db.pegawai[currentPegIdx];
+    const res = await request("uploadFile", { 
+        base64: e.target.result, 
+        fileName: file.name, 
+        pegawaiId: p.id, 
+        folderId: p.folderId 
+    });
+    if(res) { 
+        toast("File Terupload Berhasil"); 
+        input.value = ""; 
+        // Otomatis refresh data agar file terbaru masuk list
+        await initData(); 
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function deleteFile(id) {
+  if(!confirm("Hapus file?")) return;
+  const res = await request("deleteFile", { driveId: id });
+  if(res) { toast("File Dihapus"); initData(); }
+}
+
+async function deletePegawai(idx) {
+  if(!confirm("Hapus seluruh data pegawai?")) return;
+  const p = db.pegawai[idx];
+  const res = await request("removePegawai", { id: p.id, folderId: p.folderId });
+  if(res) { toast("Data Pegawai Dihapus"); initData(); }
+}
+
+function toast(m, t="success") {
+  const c = document.getElementById('toast-container');
+  const e = document.createElement('div');
+  e.className = 'toast';
+  if(t==="error") e.style.backgroundColor = "var(--red)";
+  e.innerHTML = `<i class="ti ti-info-circle"></i> ${m}`;
+  c.appendChild(e);
+  setTimeout(() => e.remove(), 3000);
+}
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function showLoading(b) { document.getElementById('loader').style.display = b ? 'flex' : 'none'; }
+</script>
+</body>
+</html>
