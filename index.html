@@ -21,67 +21,82 @@
   --bg: #f8fafc;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:#333;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#333;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
-.topbar{background:var(--navy);color:#fff;height:65px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;z-index:100;border-bottom:2px solid var(--accent)}
-.topbar-brand{display:flex;align-items:center;gap:14px;font-size:19px;font-weight:800}
-.topbar-brand img{height:40px}
+/* LOGIN UI REFINEMENT */
+#screen-login {
+  position:fixed;inset:0;background:var(--deep-navy);z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+}
+.login-box {
+  background:white; padding:40px; border-radius:20px; width:100%; max-width:400px;
+  position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.3); text-align:center;
+}
+.logo-bulat {
+  width:100px; height:100px; background:white; border-radius:50%;
+  position:absolute; top:-50px; left:50%; transform:translateX(-50%);
+  padding:10px; box-shadow:0 10px 20px rgba(0,0,0,0.2);
+  display:flex; align-items:center; justify-content:center;
+}
+.logo-bulat img { width:80%; height:auto; }
+
+/* LAYOUT */
+.topbar{background:var(--navy);color:#fff;height:65px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100}
+.topbar-right{display:flex;align-items:center;gap:15px}
+.admin-bar{background:var(--accent);padding:8px 15px;border-radius:30px;font-size:12px;font-weight:600;color:#94a3b8}
 
 .layout{display:flex;flex:1;overflow:hidden}
-.sidebar{width:260px;background:var(--deep-navy);color:#cbd5e1;display:flex;flex-direction:column;flex-shrink:0}
-.sidebar-user{padding:24px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:14px}
-.sidebar-avatar{width:45px;height:45px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff}
-.sidebar-item{display:flex;align-items:center;gap:12px;padding:14px 24px;cursor:pointer;font-size:14px;color:#94a3b8}
+.sidebar{width:260px;background:var(--deep-navy);color:#cbd5e1;display:flex;flex-direction:column}
+.sidebar-item{padding:14px 24px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;color:#94a3b8}
 .sidebar-item.active{background:rgba(52,152,219,0.1);color:var(--blue);border-right:4px solid var(--blue)}
 
-.content{flex:1;overflow-y:auto;background:var(--bg)}
-.content-inner{padding:32px;max-width:1200px;margin:0 auto}
+.content{flex:1;overflow-y:auto;padding:30px}
+.card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:24px;margin-bottom:20px}
 
-.card{background:#fff;border-radius:16px;border:1px solid var(--border);margin-bottom:24px;overflow:hidden}
-.card-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+/* SEARCH & BUTTONS */
+.search-wrapper { position:relative; flex:1; max-width:400px; }
+.search-wrapper i { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); }
+.search-wrapper input { width:100%; padding:10px 10px 10px 35px; border-radius:8px; border:1px solid var(--border); outline:none; }
 
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;font-size:14px;border-radius:8px;cursor:pointer;font-weight:600;border:none;transition:0.2s}
-.btn-navy{background:var(--navy);color:#fff}
-.btn-blue{background:var(--blue);color:#fff}
-.btn-red{background:var(--red);color:#fff}
-.btn-icon{padding:8px; border-radius:6px; font-size:18px}
-.btn-ghost{background:transparent; color:var(--text-muted); padding:8px}
-.btn-ghost:hover{background:var(--blue-light); color:var(--blue)}
-.btn-ghost-red:hover{background:var(--red-light); color:var(--red)}
+.btn{padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;transition:0.2s}
+.btn-blue{background:var(--blue);color:white}
+.btn-red{background:var(--red);color:white}
+.btn-navy{background:var(--navy);color:white}
+.btn-icon{width:36px;height:36px;padding:0;justify-content:center;border-radius:8px}
 
-.peg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
-.peg-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;cursor:pointer;transition:0.3s;position:relative}
-.peg-card:hover{transform:translateY(-6px);border-color:var(--blue)}
+.peg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.peg-card{background:white;border:1px solid var(--border);padding:20px;border-radius:12px;cursor:pointer;transition:0.3s}
+.peg-card:hover{border-color:var(--blue);box-shadow:0 10px 20px rgba(0,0,0,0.05)}
 
-.modern-table{width:100%;border-collapse:collapse;text-align:left}
-.modern-table th{padding:16px;background:#f1f5f9;color:var(--text-muted);font-size:12px;text-transform:uppercase;font-weight:700}
-.modern-table td{padding:16px;border-bottom:1px solid var(--border);font-size:14px}
-.badge-count{background:var(--blue-light);color:var(--blue);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:bold}
-
-.overlay{display:none;position:fixed;inset:0;background:rgba(10,25,47,0.8);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+/* MODAL & OVERLAY */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .overlay.show{display:flex}
-.modal{background:#fff;border-radius:20px;width:95%;max-width:550px;overflow:hidden}
+.modal{background:#fff;border-radius:16px;width:90%;max-width:500px;overflow:hidden}
+.modal-header{padding:20px;background:var(--navy);color:white;font-weight:700}
+.modal-body{padding:24px}
 
-#toast-container{position:fixed;bottom:30px;right:30px;z-index:9999}
-.toast{background:var(--navy);color:#fff;padding:16px 24px;border-radius:12px;margin-top:12px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 15px rgba(0,0,0,0.1)}
-
-#loader{position:fixed;inset:0;background:rgba(255,255,255,0.8);z-index:10000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px}
-.spinner{width:40px;height:40px;border:4px solid var(--border);border-top:4px solid var(--blue);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* TABLE DOKUMEN */
+.doc-row{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--border)}
 </style>
 </head>
 <body>
 
-<div id="loader"><div class="spinner"></div><b id="loader-text">Sinkronisasi Cloud...</b></div>
-<div id="toast-container"></div>
+<div id="loader" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,0.8);z-index:3000;align-items:center;justify-content:center;flex-direction:column">
+    <div style="width:40px;height:40px;border:4px solid #eee;border-top:4px solid var(--blue);border-radius:50%;animation:spin 1s linear infinite"></div>
+    <p style="margin-top:10px;font-weight:700">Mohon Tunggu...</p>
+</div>
 
 <!-- LOGIN SCREEN -->
-<div id="screen-login" style="position:fixed;inset:0;background:var(--deep-navy);z-index:9999;display:flex;align-items:center;justify-content:center">
-  <div style="background:white;padding:48px;border-radius:24px;width:100%;max-width:400px">
-    <h2 style="text-align:center;margin-bottom:30px;color:var(--navy)">SIMPEG Login</h2>
+<div id="screen-login">
+  <div class="login-box">
+    <div class="logo-bulat">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Logo_Kementrian_Imigrasi_dan_Pemasyarakatan_%282024%29.png/3840px-Logo_Kementrian_Imigrasi_dan_Pemasyarakatan_%282024%29.png" alt="Kemenimipas">
+    </div>
+    <h2 style="margin-top:40px;margin-bottom:10px;color:var(--navy)">SIMPEG Login</h2>
+    <p style="color:var(--text-muted);font-size:13px;margin-bottom:30px">Sistem Manajemen Kepegawaian</p>
     <form onsubmit="doLogin(event)">
-      <input type="text" id="l-user" class="form-control" placeholder="Username" style="width:100%;padding:12px;margin-bottom:15px;border:1px solid #ddd;border-radius:10px">
-      <input type="password" id="l-pass" class="form-control" placeholder="Password" style="width:100%;padding:12px;margin-bottom:25px;border:1px solid #ddd;border-radius:10px">
+      <input type="text" id="l-user" placeholder="Username" style="width:100%;padding:12px;margin-bottom:15px;border:1px solid var(--border);border-radius:8px" required>
+      <input type="password" id="l-pass" placeholder="Password" style="width:100%;padding:12px;margin-bottom:25px;border:1px solid var(--border);border-radius:8px" required>
       <button type="submit" class="btn btn-navy" style="width:100%;justify-content:center">MASUK</button>
     </form>
   </div>
@@ -90,153 +105,140 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:#333;he
 <!-- MAIN APP -->
 <div id="main-app" style="display:none;flex-direction:column;height:100vh">
   <div class="topbar">
-    <div class="topbar-brand">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Logo_Kementrian_Imigrasi_dan_Pemasyarakatan_%282024%29.png/3840px-Logo_Kementrian_Imigrasi_dan_Pemasyarakatan_%282024%29.png">
-      <span>SIMPEG — KEMENIMIPAS</span>
+    <div style="display:flex;align-items:center;gap:15px;font-weight:800;font-size:18px">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Logo_Kementrian_Imigrasi_dan_Pemasyarakatan_%282024%29.png/3840px-Logo_Kementrian_Imigrasi_dan_Pemasyarakatan_%282024%29.png" height="40">
+      <span>SIMPEG KEMENIMIPAS</span>
     </div>
-    <button class="btn btn-red" onclick="doLogout()"><i class="ti ti-logout"></i></button>
+    <div class="topbar-right">
+       <div class="admin-bar">
+         <i class="ti ti-user-shield"></i> Administrator Online
+       </div>
+       <button class="btn btn-red btn-icon" onclick="confirmLogout()" title="Logout"><i class="ti ti-logout"></i></button>
+    </div>
   </div>
 
   <div class="layout">
     <div class="sidebar">
-      <div class="sidebar-user">
-        <div class="sidebar-avatar">AD</div>
-        <div><div style="font-weight:800;color:white">Administrator</div><div style="font-size:11px">Online</div></div>
-      </div>
-      <div class="sidebar-item active" id="nav-dashboard" onclick="navTo('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
-      <div class="sidebar-item" id="nav-pegawai" onclick="navTo('pegawai')"><i class="ti ti-users"></i> Data Pegawai</div>
+      <div class="sidebar-item active" id="nav-pegawai" onclick="navTo('pegawai')"><i class="ti ti-users"></i> Data Pegawai</div>
     </div>
-
     <div class="content">
-      <div class="content-inner">
-        
-        <!-- VIEW DASHBOARD -->
-        <div id="view-dashboard" class="view">
-           <h2 style="margin-bottom:24px">Dashboard Overview</h2>
-           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;margin-bottom:32px">
-             <div class="card" style="padding:24px;border-left:5px solid var(--blue)">
-               <div style="color:var(--text-muted);font-size:12px;font-weight:700">TOTAL PEGAWAI</div>
-               <div id="stat-peg" style="font-size:32px;font-weight:900">0</div>
-             </div>
-             <div class="card" style="padding:24px;border-left:5px solid var(--green)">
-               <div style="color:var(--text-muted);font-size:12px;font-weight:700">TOTAL DOKUMEN</div>
-               <div id="stat-doc" style="font-size:32px;font-weight:900">0</div>
-             </div>
-           </div>
-           <div class="card">
-             <div class="card-header">
-               <h3 style="font-size:16px">Daftar Seluruh Pegawai <span id="badge-total" class="badge-count">0</span></h3>
-               <div style="position:relative">
-                 <i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
-                 <input type="text" placeholder="Cari di Dashboard..." onkeyup="searchDash(this.value)" style="padding:8px 12px 8px 35px; border:1px solid var(--border); border-radius:8px; font-size:13px; outline:none">
-               </div>
-             </div>
-             <div style="width:100%;overflow-x:auto">
-               <table class="modern-table">
-                 <thead><tr><th>Nama Pegawai</th><th>NIP</th><th>Jabatan</th><th>Departemen</th><th>File</th></tr></thead>
-                 <tbody id="dash-list-body"></tbody>
-               </table>
-               <div id="dash-empty" style="padding:40px; text-align:center; display:none; color:var(--text-muted)">Data tidak ditemukan</div>
-             </div>
-           </div>
-        </div>
-
-        <!-- VIEW PEGAWAI -->
-        <div id="view-pegawai" class="view" style="display:none">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-            <h2>Manajemen Pegawai</h2>
-            <div style="display:flex; gap:12px; align-items:center">
-                <div style="position:relative">
-                    <i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
-                    <input type="text" id="pegawai-search-input" placeholder="Cari Nama Pegawai..." onkeyup="searchPegawai(this.value)" style="padding:10px 12px 10px 35px; border:1px solid var(--border); border-radius:8px; font-size:14px; outline:none; width: 250px">
-                </div>
-                <button class="btn btn-blue" onclick="openModal('modal-add')"><i class="ti ti-plus"></i> Tambah Pegawai</button>
+      <!-- VIEW DATA PEGAWAI -->
+      <div id="view-pegawai" class="view">
+        <div style="display:flex;justify-content:space-between;margin-bottom:25px;align-items:center">
+          <h2>Daftar Pegawai</h2>
+          <div style="display:flex;gap:10px;flex:1;justify-content:flex-end">
+            <div class="search-wrapper">
+              <i class="ti ti-search"></i>
+              <input type="text" id="pegawai-search" placeholder="Cari nama atau NIP..." onkeyup="filterPegawai()">
             </div>
-          </div>
-          <div id="peg-container" class="peg-grid"></div>
-        </div>
-
-        <!-- VIEW DETAIL -->
-        <div id="view-detail" class="view" style="display:none">
-          <button class="btn btn-navy" onclick="navTo('pegawai')" style="margin-bottom:20px"><i class="ti ti-chevron-left"></i> Kembali</button>
-          <div class="card">
-            <div class="card-header">
-              <h3 id="det-nama">Nama Pegawai</h3>
-              <button class="btn btn-blue" onclick="triggerUpload()"><i class="ti ti-upload"></i> Upload Dokumen</button>
-            </div>
-            <div id="file-list" style="padding:10px"></div>
+            <button class="btn btn-blue" onclick="openModal('modal-add')"><i class="ti ti-plus"></i> Tambah</button>
           </div>
         </div>
+        <div id="peg-container" class="peg-grid"></div>
+      </div>
 
+      <!-- VIEW DETAIL PEGAWAI -->
+      <div id="view-detail" class="view" style="display:none">
+        <button class="btn btn-navy" onclick="navTo('pegawai')" style="margin-bottom:20px"><i class="ti ti-arrow-left"></i> Kembali</button>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <div>
+               <h3 id="det-nama">Nama Pegawai</h3>
+               <p id="det-nip" style="color:var(--text-muted);font-size:14px"></p>
+            </div>
+            <button class="btn btn-blue" onclick="triggerUpload(null)"><i class="ti ti-upload"></i> Upload Baru</button>
+          </div>
+          <div id="file-list"></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal & Inputs Hidden -->
-<div class="overlay" id="modal-add"><div class="modal"><div style="padding:20px;background:var(--navy);color:white"><b>Tambah Pegawai Baru</b></div><div style="padding:24px 0"><div style="margin-bottom:15px;padding:0 24px"><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Nama Lengkap</label><input type="text" id="f-nama" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px"></div><div style="margin-bottom:15px;padding:0 24px"><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">NIP</label><input type="text" id="f-nip" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px"></div><div style="margin-bottom:15px;padding:0 24px"><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Jabatan</label><input type="text" id="f-jabatan" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px"></div><div style="margin-bottom:15px;padding:0 24px"><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Departemen</label><input type="text" id="f-dept" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px"></div><div style="padding:0 24px"><button class="btn btn-blue" style="width:100%;justify-content:center" onclick="savePegawai()">SIMPAN</button></div></div></div></div>
+<!-- MODAL ADD PEGAWAI -->
+<div class="overlay" id="modal-add">
+  <div class="modal">
+    <div class="modal-header">Tambah Pegawai Baru</div>
+    <div class="modal-body">
+      <div style="margin-bottom:15px"><label style="display:block;margin-bottom:5px;font-weight:600">Nama Lengkap</label><input type="text" id="f-nama" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px"></div>
+      <div style="margin-bottom:15px"><label style="display:block;margin-bottom:5px;font-weight:600">NIP</label><input type="text" id="f-nip" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px"></div>
+      <div style="margin-bottom:15px"><label style="display:block;margin-bottom:5px;font-weight:600">Jabatan</label><input type="text" id="f-jabatan" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px"></div>
+      <div style="margin-bottom:25px"><label style="display:block;margin-bottom:5px;font-weight:600">Departemen</label><input type="text" id="f-dept" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px"></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-blue" style="flex:1" onclick="savePegawai()">SIMPAN</button>
+        <button class="btn" style="flex:1;background:#eee" onclick="closeModal('modal-add')">BATAL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRM LOGOUT -->
+<div class="overlay" id="modal-logout">
+  <div class="modal" style="max-width:350px;text-align:center">
+    <div class="modal-body">
+      <i class="ti ti-alert-triangle" style="font-size:48px;color:var(--red)"></i>
+      <h3 style="margin:15px 0">Konfirmasi Keluar</h3>
+      <p style="color:var(--text-muted);margin-bottom:25px">Apakah Anda yakin ingin keluar dari sistem?</p>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-red" style="flex:1" onclick="doLogout()">Keluar</button>
+        <button class="btn" style="flex:1;background:#eee" onclick="closeModal('modal-logout')">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <input type="file" id="file-input" style="display:none" onchange="handleUpload(this)">
-<input type="file" id="update-input" style="display:none" onchange="handleUpdateUpload(this)">
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxw6J726XmR_-xeNkckfdra_09AdVjXkW8HeLemv1_EbwfiP-9ntnc0BHFzq7nnZNoa/exec"; // Biarkan kosong untuk integrasi GAS otomatis
+const API_URL = "https://script.google.com/macros/s/AKfycbxw6J726XmR_-xeNkckfdra_09AdVjXkW8HeLemv1_EbwfiP-9ntnc0BHFzq7nnZNoa/exec"; 
 
 let db = { pegawai: [] };
 let currentPegIdx = -1;
-let updateFileId = null;
+let currentOldFileId = null; // Penampung ID file saat mode edit file
 
-// --- AUTH & PERSISTENCE ---
-(function checkSession() {
-  const session = sessionStorage.getItem('simpeg_auth');
-  if (session === 'true') {
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('screen-login').style.display = 'none';
-      document.getElementById('main-app').style.display = 'flex';
-      initData();
-    });
-  }
-})();
+// --- SESSION CHECK (Fitur: Tidak logout saat refresh) ---
+window.onload = () => {
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        document.getElementById('screen-login').style.display = 'none';
+        document.getElementById('main-app').style.display = 'flex';
+        initData();
+    }
+};
 
 function doLogin(e) {
   e.preventDefault();
   const u = document.getElementById('l-user').value;
   const p = document.getElementById('l-pass').value;
   if(u === 'admin' && p === 'admin123'){
-    sessionStorage.setItem('simpeg_auth', 'true');
+    localStorage.setItem('isLoggedIn', 'true');
     document.getElementById('screen-login').style.display = 'none';
     document.getElementById('main-app').style.display = 'flex';
     initData();
-  } else { toast("Login gagal!", "error"); }
+  } else {
+    alert("Username/Password salah!");
+  }
 }
 
+function confirmLogout() { openModal('modal-logout'); }
 function doLogout() {
-  if(!confirm("Yakin ingin keluar?")) return;
-  sessionStorage.removeItem('simpeg_auth');
-  location.reload();
+    localStorage.removeItem('isLoggedIn');
+    location.reload();
 }
 
-// --- DATA HANDLING ---
+// --- DATA LOGIC ---
 async function request(action, payload = {}) {
   showLoading(true);
   try {
-    // Memastikan integrasi dengan google.script.run jika tersedia, atau fetch sebagai fallback
-    if (typeof google !== 'undefined' && google.script && google.script.run) {
-       return new Promise((resolve, reject) => {
-         google.script.run
-           .withSuccessHandler(res => { showLoading(false); resolve(res); })
-           .withFailureHandler(err => { showLoading(false); reject(err); })
-           .doAction(action, payload);
-       });
-    } else {
-       // Mock / Demo Mode jika tidak di environment GAS
-       showLoading(false);
-       console.log("Mock Request:", action, payload);
-       return { status: "success", pegawai: db.pegawai };
-    }
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action, payload })
+    });
+    const result = await res.json();
+    showLoading(false);
+    return result;
   } catch (err) {
     showLoading(false);
-    toast("Gagal Sinkronisasi", "error");
+    alert("Koneksi gagal");
     return null;
   }
 }
@@ -245,185 +247,66 @@ async function initData() {
   const res = await request("getAppData");
   if(res) {
     db = res;
-    updateStats();
     renderPegawai();
-    renderDashList();
     if(currentPegIdx !== -1) renderFiles();
   }
 }
 
-function updateStats() {
-  const totalPeg = db.pegawai.length;
-  const totalDoc = db.pegawai.reduce((a, b) => a + (b.files ? b.files.length : 0), 0);
-  document.getElementById('stat-peg').textContent = totalPeg;
-  document.getElementById('stat-doc').textContent = totalDoc;
-  document.getElementById('badge-total').textContent = totalPeg;
+// Fitur: Filter/Search Pegawai
+function filterPegawai() {
+  const query = document.getElementById('pegawai-search').value.toLowerCase();
+  const filtered = db.pegawai.filter(p => p.nama.toLowerCase().includes(query) || p.nip.toString().includes(query));
+  renderPegawai(filtered);
 }
 
-function navTo(v) {
-  document.querySelectorAll('.view').forEach(el => el.style.display = 'none');
-  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-' + v).style.display = 'block';
-  document.getElementById('nav-' + v).classList.add('active');
-}
-
-// --- SEARCH FUNCTIONS (FIXED) ---
-function searchDash(val) {
-  renderDashList(val);
-}
-
-function renderDashList(filter = "") {
-  const body = document.getElementById('dash-list-body');
-  const empty = document.getElementById('dash-empty');
-  const filtered = db.pegawai.filter(p => 
-    p.nama.toLowerCase().includes(filter.toLowerCase()) || 
-    p.nip.toLowerCase().includes(filter.toLowerCase())
-  );
-  
-  if(filtered.length === 0) { 
-    body.innerHTML = ""; 
-    empty.style.display = "block"; 
-    return; 
-  }
-  
-  empty.style.display = "none";
-  body.innerHTML = filtered.map(p => `
-    <tr>
-      <td><b>${p.nama}</b></td>
-      <td>${p.nip}</td>
-      <td>${p.jabatan}</td>
-      <td>${p.dept}</td>
-      <td><span class="badge-count">${p.files ? p.files.length : 0}</span></td>
-    </tr>`).join('');
-}
-
-function searchPegawai(val) {
-  renderPegawai(val);
-}
-
-function renderPegawai(filter = "") {
+function renderPegawai(data = db.pegawai) {
   const container = document.getElementById('peg-container');
-  const filtered = db.pegawai.filter(p => 
-    p.nama.toLowerCase().includes(filter.toLowerCase()) || 
-    p.nip.toLowerCase().includes(filter.toLowerCase())
-  );
-  
-  if(filtered.length === 0) {
-    container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted)">Pegawai tidak ditemukan</div>`;
-    return;
-  }
-
-  container.innerHTML = filtered.map(p => {
-    // Cari index asli dari db global agar fungsi click tidak salah target
-    const originalIdx = db.pegawai.findIndex(orig => orig.id === p.id);
-    return `
-    <div class="peg-card" onclick="openDetail(${originalIdx})">
-      <div style="display:flex; justify-content:space-between; align-items:start">
-        <div class="sidebar-avatar">${p.nama.charAt(0)}</div>
-        <button class="btn btn-ghost btn-ghost-red" onclick="event.stopPropagation(); deletePegawai(${originalIdx})"><i class="ti ti-trash"></i></button>
-      </div>
-      <div style="margin-top:16px; font-weight:800; color:var(--navy)">${p.nama}</div>
-      <div style="font-size:12px; color:var(--text-muted)">${p.nip} • ${p.jabatan}</div>
-    </div>
-  `}).join('');
-}
-
-// --- FILE OPERATIONS ---
-function openDetail(idx) {
-  currentPegIdx = idx;
-  document.getElementById('det-nama').textContent = db.pegawai[idx].nama;
-  renderFiles();
-  navTo('detail');
-}
-
-function renderFiles() {
-  const list = document.getElementById('file-list');
-  const files = db.pegawai[currentPegIdx].files || [];
-  
-  if(files.length === 0) {
-    list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted)">Belum ada dokumen</div>`;
-    return;
-  }
-
-  list.innerHTML = files.map(f => `
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 20px; border-bottom:1px solid #eee">
-      <div style="display:flex; align-items:center; gap:12px">
-        <div style="width:36px; height:36px; background:var(--blue-light); color:var(--blue); border-radius:8px; display:flex; align-items:center; justify-content:center">
-          <i class="ti ti-file-text" style="font-size:20px"></i>
-        </div>
+  container.innerHTML = data.map((p, idx) => `
+    <div class="peg-card" onclick="openDetail(${db.pegawai.indexOf(p)})">
+      <div style="display:flex;justify-content:space-between;align-items:start">
         <div>
-          <div style="font-size:14px; font-weight:700">${f.name}</div>
-          <div style="font-size:11px; color:var(--text-muted)">Drive ID: ${f.driveId.substring(0,8)}...</div>
+          <h4 style="margin-bottom:5px;color:var(--navy)">${p.nama}</h4>
+          <p style="font-size:12px;color:var(--text-muted)">NIP: ${p.nip}</p>
         </div>
-        <button title="Upload Ulang / Update" onclick="triggerUpdate('${f.driveId}')" style="background:none; border:none; color:var(--blue); cursor:pointer; padding:5px">
-           <i class="ti ti-pencil"></i>
-        </button>
+        <button class="btn btn-red btn-icon" onclick="event.stopPropagation(); deletePegawai(${db.pegawai.indexOf(p)})"><i class="ti ti-trash"></i></button>
       </div>
-      <div style="display:flex; gap:10px">
-        <a href="${f.url}" target="_blank" class="btn btn-navy btn-icon" title="Lihat"><i class="ti ti-eye"></i></a>
-        <button class="btn btn-red btn-icon" onclick="deleteFile('${f.driveId}')" title="Hapus"><i class="ti ti-trash"></i></button>
+      <div style="margin-top:15px;font-size:13px">
+        <div><i class="ti ti-briefcase"></i> ${p.jabatan}</div>
+        <div><i class="ti ti-building"></i> ${p.dept}</div>
       </div>
     </div>
   `).join('');
 }
 
-function triggerUpload() { document.getElementById('file-input').click(); }
-
-function handleUpload(input) {
-  const file = input.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async function(e) {
-    const p = db.pegawai[currentPegIdx];
-    const res = await request("uploadFile", { 
-      base64: e.target.result, 
-      fileName: file.name, 
-      pegawaiId: p.id, 
-      folderId: p.folderId 
-    });
-    if(res) { 
-      toast("Dokumen berhasil diunggah"); 
-      input.value = ""; 
-      await initData(); 
-    }
-  };
-  reader.readAsDataURL(file);
+function openDetail(idx) {
+  currentPegIdx = idx;
+  const p = db.pegawai[idx];
+  document.getElementById('det-nama').textContent = p.nama;
+  document.getElementById('det-nip').textContent = "NIP: " + p.nip;
+  renderFiles();
+  navTo('detail');
 }
 
-// Fitur Update Dokumen (Upload Ulang di baris yang sama)
-function triggerUpdate(id) {
-  updateFileId = id;
-  document.getElementById('update-input').click();
-}
-
-function handleUpdateUpload(input) {
-  const file = input.files[0];
-  if(!file || !updateFileId) return;
-  const reader = new FileReader();
-  reader.onload = async function(e) {
-    const p = db.pegawai[currentPegIdx];
-    // Memanggil aksi updateFile di backend (menghapus yang lama & upload yang baru di slot tersebut)
-    const res = await request("updateFile", { 
-      base64: e.target.result, 
-      fileName: file.name, 
-      pegawaiId: p.id, 
-      folderId: p.folderId,
-      oldDriveId: updateFileId
-    });
-    if(res) { 
-      toast("Dokumen diperbarui ke versi terbaru"); 
-      input.value = ""; 
-      updateFileId = null;
-      await initData(); 
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
-async function deleteFile(id) {
-  if(!confirm("Hapus dokumen ini secara permanen?")) return;
-  const res = await request("deleteFile", { driveId: id });
-  if(res) { toast("Dokumen berhasil dihapus"); await initData(); }
+// Fitur: Ganti tombol lihat/hapus jadi icon mata dan trash
+function renderFiles() {
+  const list = document.getElementById('file-list');
+  const files = db.pegawai[currentPegIdx].files || [];
+  list.innerHTML = files.map(f => `
+    <div class="doc-row">
+      <div style="display:flex;align-items:center;gap:10px">
+        <i class="ti ti-file-text" style="color:var(--blue);font-size:20px"></i>
+        <span style="font-size:14px">${f.name}</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <!-- Edit File (Ganti Baru) -->
+        <button class="btn btn-navy btn-icon" onclick="triggerUpload('${f.driveId}')" title="Ganti File"><i class="ti ti-edit"></i></button>
+        <!-- Lihat (Mata) -->
+        <a href="${f.url}" target="_blank" class="btn btn-blue btn-icon"><i class="ti ti-eye"></i></a>
+        <!-- Hapus (Trash) -->
+        <button class="btn btn-red btn-icon" onclick="deleteFile('${f.driveId}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
 }
 
 async function savePegawai() {
@@ -433,36 +316,66 @@ async function savePegawai() {
     jabatan: document.getElementById('f-jabatan').value,
     dept: document.getElementById('f-dept').value
   };
-  if(!p.nama || !p.nip) return toast("Nama dan NIP wajib diisi", "error");
+  if(!p.nama || !p.nip) return alert("Nama & NIP wajib diisi");
   const res = await request("addPegawai", p);
-  if(res) {
-    toast("Pegawai berhasil ditambahkan");
+  if(res && res.status === "success") {
     closeModal('modal-add');
-    await initData();
-    ['f-nama','f-nip','f-jabatan','f-dept'].forEach(id => document.getElementById(id).value = "");
+    initData();
+  } else if (res) {
+    alert(res.message); // Menampilkan pesan NIP duplikat
   }
+}
+
+// Fitur: Edit file (Ganti dengan file baru)
+function triggerUpload(oldFileId) {
+  currentOldFileId = oldFileId;
+  document.getElementById('file-input').click();
+}
+
+function handleUpload(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const p = db.pegawai[currentPegIdx];
+    const res = await request("uploadFile", { 
+        base64: e.target.result, 
+        fileName: file.name, 
+        pegawaiId: p.id, 
+        folderId: p.folderId,
+        oldDriveId: currentOldFileId
+    });
+    if(res && res.status === "success") { 
+        input.value = ""; 
+        currentOldFileId = null;
+        initData(); 
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function deleteFile(id) {
+  if(!confirm("Hapus file ini secara permanen?")) return;
+  const res = await request("deleteFile", { driveId: id });
+  if(res) initData();
 }
 
 async function deletePegawai(idx) {
   if(!confirm("Hapus seluruh data & folder pegawai ini?")) return;
   const p = db.pegawai[idx];
   const res = await request("removePegawai", { id: p.id, folderId: p.folderId });
-  if(res) { toast("Pegawai berhasil dihapus"); await initData(); }
+  if(res) initData();
 }
 
-// --- UI UTILS ---
-function toast(m, t="success") {
-  const c = document.getElementById('toast-container');
-  const e = document.createElement('div');
-  e.className = 'toast';
-  if(t==="error") e.style.backgroundColor = "var(--red)";
-  e.innerHTML = `<i class="ti ti-info-circle"></i> ${m}`;
-  c.appendChild(e);
-  setTimeout(() => e.remove(), 3000);
+function navTo(v) {
+  document.querySelectorAll('.view').forEach(el => el.style.display = 'none');
+  document.getElementById('view-' + v).style.display = 'block';
 }
+
 function openModal(id) { document.getElementById(id).classList.add('show'); }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 function showLoading(b) { document.getElementById('loader').style.display = b ? 'flex' : 'none'; }
+@keyframes spin { to { transform: rotate(360deg); } }
 </script>
 </body>
 </html>
